@@ -1,0 +1,37 @@
+# 依赖
+node_modules/
+
+# 构建产物：www 由 build-www.js 从桌面版 EngRead 组装生成，不入库
+www/
+
+# 词典瘦身产物（38MB，由 build-dict.js 从桌面版全量词典生成）
+data/dict-slim.json
+
+# Android 构建产物与生成文件（android/ 内已由 Capacitor 自带的 android/.gitignore 覆盖，此处兜底）
+android/.gradle/
+android/build/
+android/app/build/
+android/capacitor-cordova-android-plugins/
+android/app/src/main/assets/public/
+android/local.properties
+*.apk
+
+# 日志
+*.log
+npm-debug.log*
+
+# 环境与本地配置
+.env
+.env.*
+*.local
+
+# 编辑器 / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 系统文件
+.DS_Store
+Thumbs.db
+Desktop.ini

@@ -1,0 +1,11 @@
+{
+  "appId": "com.caread.app",
+  "appName": "Caread",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
