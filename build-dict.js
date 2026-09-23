@@ -6,8 +6,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// 本目录已独立于桌面版（D:\EngRead）：从桌面版 node_modules 读取全量词典
-const SRC = path.join(__dirname, '..', 'EngRead', 'node_modules', 'ecdict', 'data', 'dict.json');
+// 本目录已独立于桌面版（D:\Caread）：从桌面版 node_modules 读取全量词典
+const SRC = path.join(__dirname, '..', 'Caread', 'node_modules', 'ecdict', 'data', 'dict.json');
 const DEST = path.join(__dirname, 'data', 'dict-slim.json');
 
 console.log('读取全量词典…');

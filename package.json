@@ -2,7 +2,7 @@
   "name": "caread-mobile",
   "version": "1.0.0",
   "private": true,
-  "description": "Caread 平板/移动端打包工程：Web 资源来自 D:\\EngRead，Capacitor 出安卓 APK",
+  "description": "Caread 平板/移动端打包工程：Web 资源来自 D:\\Caread，Capacitor 出安卓 APK",
   "scripts": {
     "build:dict": "node build-dict.js",
     "build:www": "node build-www.js",

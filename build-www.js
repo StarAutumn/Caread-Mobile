@@ -5,8 +5,8 @@
 const fs = require('fs');
 const path = require('path');
 
-// 本目录已独立于桌面版：Web 资源从 D:\EngRead 读取，组装进本目录 www/
-const ROOT = path.join(__dirname, '..', 'EngRead');
+// 本目录已独立于桌面版：Web 资源从 D:\Caread 读取，组装进本目录 www/
+const ROOT = path.join(__dirname, '..', 'Caread');
 const WWW = path.join(__dirname, 'www');
 
 // [源, 目标（相对 www/）]，目标保持与 index.html 引用路径一致

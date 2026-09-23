@@ -80,7 +80,7 @@ adb install -r android\app\build\outputs\apk\debug\app-debug.apk
 
 > 面向开发者。普通用户只需拉取本仓库，无需关心桌面版。
 
-网页代码在[桌面版仓库](https://gitee.com/star-movement-three-autumn/Caread)中修改（需与本工程同级目录，如 `D:\EngRead` 与 `D:\CareadMobile`），然后：
+网页代码在[桌面版仓库](https://gitee.com/star-movement-three-autumn/Caread)中修改（需与本工程同级目录，如 `D:\Caread` 与 `D:\CareadMobile`），然后：
 
 ```bash
 cd D:\CareadMobile
@@ -130,7 +130,7 @@ cd android
 ```
 CareadMobile/
 ├── build-dict.js           # 词典瘦身脚本：桌面版全量 ECDICT → data/dict-slim.json
-├── build-www.js            # www 组装脚本：从 ..\EngRead 复制网页资源与应用图标进 www/
+├── build-www.js            # www 组装脚本：从 ..\Caread 复制网页资源与应用图标进 www/
 ├── capacitor.config.json   # Capacitor 配置（appId: com.caread.app, webDir: www）
 ├── package.json            # 脚本：build:dict / build:www / sync / open
 ├── data/                   # 构建中间产物（dict-slim.json 不入库，用 build:dict 重新生成）
