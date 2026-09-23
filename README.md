@@ -1,6 +1,6 @@
 # ⚠️ 重要声明
 
-本项目为个人业余AI辅助开发项目，是 [Caread 桌面版](../EngRead)的平板/移动端打包工程。
+本项目为个人业余AI辅助开发项目，是 [Caread 桌面版](https://gitee.com/star-movement-three-autumn/Caread)的平板/移动端打包工程。**本仓库完全独立**：已内置全部网页资源与离线词典，克隆后无需桌面版仓库即可构建 APK。
 
 - 项目**可运行**，但可能存在未知问题或边界情况
 - **深度使用**或用于**商业生产环境**时，请自行评估风险
@@ -22,22 +22,17 @@
 
 ## 工作原理
 
-本工程**不包含**网页源码，只负责打包：
+仓库内已包含**可直接构建的完整产物**（`www/` 与瘦身词典均已入库），克隆后无需任何生成步骤：
 
 ```
-D:\EngRead（桌面版，网页源码所在地）
-   │
-   │  build-dict.js   全量 ECDICT 词典 → 瘦身版 [word, translation]（~38MB）
-   │  build-www.js    桌面版 index.html/css/js + Quill/mammoth + 瘦身词典 → www/
-   ▼
-D:\CareadMobile\www（组装产物，不入库）
+www/（网页资源 + Quill/mammoth + 38MB 瘦身词典，已入库）
    │
    │  npx cap sync   复制进安卓工程 assets
    ▼
 android/（Capacitor 原生工程）→ Gradle Build → app-debug.apk
 ```
 
-> **硬性要求**：构建脚本以相对路径 `..\EngRead` 读取桌面版资源，请把两个仓库放在**同级目录**下。
+`build-dict.js` / `build-www.js` 两个脚本仅供**开发者**使用：网页源码维护在[桌面版仓库](https://gitee.com/star-movement-three-autumn/Caread)中，改动后通过脚本重新组装 `www/` 并提交更新（见[日常更新流程](#日常更新流程)）。
 
 ## 目录
 
@@ -62,20 +57,14 @@ android/（Capacitor 原生工程）→ Gradle Build → app-debug.apk
 ## 首次构建
 
 ```bash
-# 0. 前置：桌面版仓库需位于同级目录
-#    D:\EngRead        ← 网页源码
-#    D:\CareadMobile   ← 本工程
+# 1. 克隆本仓库（独立仓库，无需桌面版）
+git clone https://gitee.com/star-movement-three-autumn/caread-mobile.git
+cd caread-mobile
 
-# 1. 安装依赖（本工程的 node_modules 独立于桌面版）
+# 2. 安装依赖
 npm install
 
-# 2. 生成瘦身词典（从 ..\EngRead\node_modules\ecdict 读取全量数据）
-npm run build:dict
-
-# 3. 组装 www 并同步进安卓工程
-npm run sync
-
-# 4. 构建 APK
+# 3. 构建 APK
 npm run open        # 打开 Android Studio → Build → Build APK(s)
 ```
 
@@ -89,14 +78,16 @@ adb install -r android\app\build\outputs\apk\debug\app-debug.apk
 
 ## 日常更新流程
 
-网页代码在**桌面版工程**（`D:\EngRead`）中修改，然后：
+> 面向开发者。普通用户只需拉取本仓库，无需关心桌面版。
+
+网页代码在[桌面版仓库](https://gitee.com/star-movement-three-autumn/Caread)中修改（需与本工程同级目录，如 `D:\EngRead` 与 `D:\CareadMobile`），然后：
 
 ```bash
 cd D:\CareadMobile
 npm run sync        # 重组 www + 同步进安卓工程
 ```
 
-再 Build APK 安装即可。平板端与桌面端完全独立演进，互不影响。
+把更新的 `www/` 提交入库，再 Build APK 安装即可。
 
 ## 命令行构建（免开 Android Studio）
 
@@ -142,9 +133,8 @@ CareadMobile/
 ├── build-www.js            # www 组装脚本：从 ..\EngRead 复制网页资源与应用图标进 www/
 ├── capacitor.config.json   # Capacitor 配置（appId: com.caread.app, webDir: www）
 ├── package.json            # 脚本：build:dict / build:www / sync / open
-├── data/
-│   └── dict-slim.json      # 瘦身词典产物（~38MB，不入库）
-├── www/                    # 组装产物（不入库）
+├── data/                   # 构建中间产物（dict-slim.json 不入库，用 build:dict 重新生成）
+├── www/                    # 网页资源 + 瘦身词典（已入库，开发者改动后重新生成提交）
 └── android/                # Capacitor 生成的原生安卓工程（Android Studio 打开）
     ├── build.gradle        # 阿里云 Maven 镜像
     ├── gradle/wrapper/     # 腾讯云 Gradle 镜像
@@ -156,8 +146,8 @@ CareadMobile/
 **Q: 首次查词慢？**
 正常现象。38MB 瘦身词典在首次查询时才加载进内存，约 1~2 秒，之后为内存 Map 直查。
 
-**Q: 克隆后没有 www/ 和词典？**
-它们是构建产物，已加入 .gitignore。按 [首次构建](#首次构建) 执行 `npm run build:dict && npm run sync` 生成。
+**Q: 克隆后没有词典？**
+不会，随 APK 打包的瘦身词典已直接入库（位于 `www/data/`，仓库约 40MB）。仅开发者在改了桌面版网页代码后，才需按 [日常更新流程](#日常更新流程) 执行 `npm run sync` 重新生成并提交。
 
 **Q: npm install 报漏洞警告？**
 当前依赖存在约 18 个 npm audit 提示，不影响功能，可忽略。

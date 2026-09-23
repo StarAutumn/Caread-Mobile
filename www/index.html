@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caread · 桌面版</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/highlighter.css">
+    <link rel="stylesheet" href="node_modules/quill/dist/quill.snow.css">
+</head>
+
+<body>
+    <!-- 自定义标题栏（VSCode 风格：图标 + 菜单 + 搜索 + 窗口控制） -->
+    <div id="title-bar">
+        <img class="title-app-icon" src="assets/icon-256.png" alt="Caread" draggable="false">
+        <div class="title-menus" id="titleMenus"></div>
+        <div class="title-search">
+            <input id="titleSearchInput" type="text" placeholder="搜索…" autocomplete="off" spellcheck="false">
+            <div id="searchDropdown" class="search-dropdown hidden"></div>
+        </div>
+        <div class="title-controls">
+            <div class="win-btn" id="settingsBtn" title="设置"><span>⚙</span></div>
+            <div class="win-btn" id="winMinBtn" title="最小化"><span>─</span></div>
+            <div class="win-btn" id="winMaxBtn" title="最大化 / 还原"><span id="winMaxIco">▢</span></div>
+            <div class="win-btn win-close" id="winCloseBtn" title="关闭"><span>✕</span></div>
+        </div>
+    </div>
+
+    <!-- 标签栏（多文件） -->
+    <div id="tab-bar"></div>
+
+    <!-- 右侧大纲栏 -->
+    <div id="outline-bar">
+        <button class="outline-toggle" id="outlineToggle" title="展开 / 折叠大纲">◀</button>
+        <div class="outline-content">
+            <div class="outline-header">大纲</div>
+            <div class="outline-search">
+                <input id="outlineSearchInput" type="text" placeholder="搜索大纲…" autocomplete="off" spellcheck="false">
+            </div>
+            <div id="outlineList"></div>
+        </div>
+    </div>
+
+    <!-- 正文右键菜单 -->
+    <div id="context-menu" class="hidden">
+        <div class="ctx-item has-sub" id="ctxAddOutline">
+            <span>📌 添加到大纲</span>
+            <span class="ctx-arrow">▸</span>
+            <div class="ctx-submenu">
+                <div class="ctx-item" data-level="1"><span>一级大纲</span><span class="item-accel">1</span></div>
+                <div class="ctx-item" data-level="2"><span>二级大纲</span><span class="item-accel">1.1</span></div>
+                <div class="ctx-item" data-level="3"><span>三级大纲</span><span class="item-accel">1.1.1</span></div>
+            </div>
+        </div>
+        <div class="ctx-item" id="ctxAddNote">
+            <span>📝 添加批注</span>
+        </div>
+    </div>
+
+    <!-- 批注卡右键菜单 -->
+    <div id="note-ctx-menu" class="hidden">
+        <div class="note-ctx-item" data-action="edit"><span>✏️ 编辑</span></div>
+        <div class="note-ctx-item danger" data-action="delete"><span>🗑️ 删除</span></div>
+    </div>
+
+    <!-- 侧边栏 -->
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle" title="切换输入面板">▶</button>
+        <div class="sidebar-content">
+            <div class="input-area">
+                <textarea id="textInput" placeholder="在此粘贴英文文本…"></textarea>
+                <div class="btn-group">
+                    <button class="btn" id="importBtn">📂 导入试卷</button>
+                    <button class="btn" id="onlineBtn">🌐 在线试卷</button>
+                </div>
+                <span class="word-count" id="wordCount">0 个单词</span>
+                <div class="tip">
+                    💡 支持导入 .docx Word 文档 · 也可直接粘贴文本<br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顶部工具栏 -->
+    <div id="top-toolbar">
+        <button class="toolbar-toggle" id="toolbarToggle" title="折叠/展开工具栏">▲</button>
+        <div class="toolbar-header">
+            <div class="toolbar-left">
+                <div class="hl-group">
+                    <button id="highlighterBtn" class="toolbar-btn" title="选中单词后点击，给选中的单词加荧光笔高亮">🖍️ 荧光笔</button>
+                    <div class="hl-color-group" id="hlColorGroup">
+                        <button class="hl-color-btn" id="hlColorBtn" title="选择荧光笔颜色">
+                            <span class="color-swatch" id="hlColorSwatch"></span>
+                            <span class="caret">▼</span>
+                        </button>
+                        <div class="hl-color-menu" id="hlColorMenu">
+                            <div class="hl-menu-title">常用颜色</div>
+                            <div class="hl-presets" id="hlPresets"></div>
+                            <div class="hl-menu-title">色盘</div>
+                            <div class="hl-sv" id="hlSv"><div class="hl-marker" id="hlSvMarker"></div></div>
+                            <div class="hl-hue" id="hlHue"><div class="hl-marker" id="hlHueMarker"></div></div>
+                            <div class="hl-hex" id="hlHex"></div>
+                            <div class="hl-alpha-row">
+                                <span class="hl-alpha-label">透明</span>
+                                <input type="range" class="hl-alpha-range" id="hlAlphaRange" min="0" max="100" value="100">
+                                <span class="hl-alpha-val" id="hlAlphaVal">100%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pen-group">
+                    <button id="penBtn" class="toolbar-btn" title="画笔：点击激活后，按住鼠标在文章上拖动画线">✏️ 画笔</button>
+                    <div class="hl-color-group" id="penColorGroup">
+                        <button class="hl-color-btn" id="penColorBtn" title="选择画笔颜色">
+                            <span class="color-swatch" id="penColorSwatch"></span>
+                            <span class="caret">▼</span>
+                        </button>
+                        <div class="hl-color-menu" id="penColorMenu">
+                            <div class="hl-menu-title">常用颜色</div>
+                            <div class="hl-presets" id="penPresets"></div>
+                            <div class="hl-menu-title">色盘</div>
+                            <div class="hl-sv" id="penSv"><div class="hl-marker" id="penSvMarker"></div></div>
+                            <div class="hl-hue" id="penHue"><div class="hl-marker" id="penHueMarker"></div></div>
+                            <div class="hl-hex" id="penHex"></div>
+                            <div class="hl-alpha-row">
+                                <span class="hl-alpha-label">透明</span>
+                                <input type="range" class="hl-alpha-range" id="penAlphaRange" min="0" max="100" value="100">
+                                <span class="hl-alpha-val" id="penAlphaVal">100%</span>
+                            </div>
+                            <div class="hl-alpha-row">
+                                <span class="hl-alpha-label">粗细</span>
+                                <input type="range" class="hl-alpha-range" id="penSizeRange" min="1" max="20" value="4">
+                                <span class="hl-alpha-val" id="penSizeVal">4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button id="eraserBtn" class="toolbar-btn" title="橡皮擦：点击荧光笔或画笔笔迹，整段擦除">🧽 橡皮擦</button>
+            </div>
+            <div class="toolbar-right">
+                <button id="dualToggleBtn" class="toolbar-btn" title="切换单屏/双屏">🖥️ 双屏</button>
+                <button id="toggleCardsBtn" class="toolbar-btn" title="一键显示/隐藏单词释义">📖 显示卡片</button>
+            </div>
+        </div>
+        <div id="note-quill-toolbar"></div><!-- 批注编辑态：Quill 富文本工具栏挂载点，编辑时替换原工具栏 -->
+        <div class="toolbar-body"></div><!-- 空扩展区：非空时会以 padding 溢出工具栏，压住正文框顶部拦截指针，扩展时需同步调 #top-toolbar 高度 -->
+    </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <!-- 开始页面（无内容时显示） -->
+        <div id="start-page" class="hidden">
+            <img class="start-icon" src="assets/icon-256.png" alt="Caread" draggable="false">
+            <h1>Caread</h1>
+            <p class="start-sub">英文阅读 · 点词查义 · 荧光标注 · 双屏对照</p>
+            <div class="start-actions">
+                <button id="startNewBtn" class="btn">📄 新建空白</button>
+                <button id="startOpenBtn" class="btn">📂 打开工作区</button>
+                <button id="startImportBtn" class="btn">📑 导入 Word</button>
+            </div>
+            <p class="start-tip">或在左侧输入框粘贴英文文本，点击「渲染文章」开始</p>
+        </div>
+        <div id="article-container"></div>
+    </div>
+
+    <!-- 在线试卷选择面板 -->
+    <div id="online-panel" class="hidden">
+        <div class="online-panel-title">加载在线真题（懒笔记 · 四六级）</div>
+        <div class="online-panel-row">
+            <select id="examLevel"></select>
+            <select id="examYear"></select>
+            <select id="examMonth"></select>
+            <select id="examSet"></select>
+        </div>
+        <div class="online-panel-actions">
+            <button class="btn" id="onlineLoadBtn">加载真题</button>
+            <button class="btn btn-secondary" id="onlineCancelBtn">取消</button>
+        </div>
+        <div class="online-panel-tip">内容来自 english-exam.lazynote.cn · 仅限个人学习使用</div>
+    </div>
+
+    <!-- 底部状态栏 -->
+    <div id="status-bar">
+        <div class="status-zoom" title="缩放中间阅读区（双击滑条恢复 100%）">
+            <span>🔍 缩放</span>
+            <input type="range" id="zoomRange" min="50" max="200" step="5" value="100">
+            <span id="zoomVal">100%</span>
+        </div>
+    </div>
+
+    <!-- 顶部提示通知 -->
+    <div id="toast-container"></div>
+
+    <!-- ============ 脚本加载顺序 ============ -->
+    <!-- 全部为经典 script（无模块），顶层声明即全局，顺序即依赖，不可随意调换： -->
+    <!-- - platform.js：必须最先——浏览器/安卓环境用同名接口顶替 electronAPI，调用点零改动；桌面版自动跳过 -->
+    <!-- - renderer.js：定义全局 container / textInput / currentZoom 与正文渲染，多数文件依赖它，必须靠前 -->
+    <!-- - highlighter.js → outline.js：outline 复用 highlighter 的选区/偏移工具（selectionStartOffset 等） -->
+    <!-- - highlighter.js → notes.js / search.js / pen.js / eraser.js：复用 buildTextIndex 等文本索引工具 -->
+    <!-- - color-picker.js → pen.js / eraser.js / notes.js：荧光笔/画笔/批注共用的取色面板工厂与 hexToRgb -->
+    <!-- - quill.js（vendor）→ notes.js：批注富文本编辑器依赖 Quill 全局，必须在其前 -->
+    <!-- - main.js 必须最后：初始化入口，调用其余各文件的函数 -->
+    <script src="js/platform.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/titlebar.js"></script>
+    <script src="js/panels.js"></script>
+    <script src="js/renderer.js"></script>
+    <script src="js/dictionary.js"></script>
+    <script src="js/highlighter.js"></script>
+    <script src="js/tabs.js"></script>
+    <script src="js/pen.js"></script>
+    <script src="js/color-picker.js"></script>
+    <script src="js/eraser.js"></script>
+    <script src="js/cards.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/outline.js"></script>
+    <script src="node_modules/quill/dist/quill.js"></script>
+    <script src="js/notes.js"></script>
+    <script src="js/statusbar.js"></script>
+    <script src="js/online-import.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/touch.js"></script>
+</body>
+
+</html>

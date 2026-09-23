@@ -1,0 +1,315 @@
+/* ========== 荧光笔按钮 + 颜色选择（连体，位于工具栏最左） ========== */
+.hl-group {
+    display: inline-flex;
+    align-items: stretch;
+}
+
+.hl-group .toolbar-btn {
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+}
+
+.hl-color-group {
+    position: relative;
+    display: inline-flex;
+    align-items: stretch;
+}
+
+.toolbar-btn.active {
+    background: var(--btn-bg);
+    color: #fff;
+    border-color: var(--btn-bg);
+}
+
+.toolbar-btn.active:hover {
+    background: var(--btn-hover);
+}
+
+.hl-color-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+    padding: 1px 6px 1px 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.hl-color-btn:hover {
+    background: var(--hover-bg);
+}
+
+.color-swatch {
+    display: block;
+    width: 20px;
+    height: 10px;
+    border-radius: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    /* 棋盘格底，透明时直观显示 */
+    background-image: linear-gradient(45deg, #cbd5e1 25%, transparent 25%, transparent 75%, #cbd5e1 75%),
+        linear-gradient(45deg, #cbd5e1 25%, transparent 25%, transparent 75%, #cbd5e1 75%);
+    background-size: 6px 6px;
+    background-position: 0 0, 3px 3px;
+}
+
+.caret {
+    display: block;
+    font-size: 9px;
+    line-height: 9px;
+    color: var(--text-secondary);
+}
+
+.hl-color-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 1200;
+    display: none;
+    width: 272px;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    padding: 12px;
+}
+
+.hl-color-menu.show {
+    display: block;
+}
+
+.hl-menu-title {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 10px 0 5px;
+}
+
+.hl-menu-title:first-child {
+    margin-top: 0;
+}
+
+/* 20 种常用颜色 */
+.hl-presets {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+}
+
+.hl-preset {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.15s, box-shadow 0.15s;
+    /* 防止点击色板时浏览器清除正文选区 */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+.hl-preset:hover {
+    transform: scale(1.2);
+    z-index: 1;
+}
+
+.hl-preset.active {
+    box-shadow: 0 0 0 2px var(--bg-input), 0 0 0 3px var(--btn-bg);
+}
+
+/* ========== 色盘 ========== */
+.hl-sv {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    border-radius: 6px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    cursor: crosshair;
+    touch-action: none;
+    background: linear-gradient(to top, #000, transparent),
+        linear-gradient(to right, #fff, hsl(60, 100%, 50%));
+}
+
+.hl-hue {
+    position: relative;
+    width: 100%;
+    height: 14px;
+    margin-top: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    touch-action: none;
+    background: linear-gradient(to right,
+        #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+}
+
+.hl-marker {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.hl-hex {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 12px;
+    font-family: Consolas, Menlo, monospace;
+    color: var(--text-secondary);
+    background: var(--bg-article);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 4px 0;
+}
+
+/* 透明度滑动条 */
+.hl-alpha-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.hl-alpha-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.hl-alpha-range {
+    flex: 1;
+    min-width: 0;
+    height: 10px;
+    border-radius: 5px;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    background: linear-gradient(to right, rgba(255, 214, 10, 0), rgba(255, 214, 10, 1));
+}
+
+.hl-alpha-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--border-color);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+
+.hl-alpha-val {
+    width: 42px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+/* 画笔粗细滑动条 */
+.hl-size-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.hl-size-val {
+    width: 42px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+/* 橡皮擦模式：十字光标、禁止选中文本 */
+#article-container.eraser-active .article-pane {
+    cursor: crosshair;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+[data-theme="dark"] #top-toolbar {
+    background: var(--bg-input);
+}
+
+/* 荧光笔高亮：包裹整个选区，背景连续覆盖单词与空格 */
+.hl-run {
+    background: var(--highlighter-bg);
+    border-radius: 3px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+.hl-run .word {
+    background: transparent;
+}
+
+/* 画笔激活时词底色保持透明（触屏无 hover，无需媒体查询：
+   该规则本就是「覆盖 hover」，粘滞时也需要它兜底） */
+@media (hover: hover) {
+    .hl-run .word:hover {
+        background: transparent;
+    }
+}
+
+/* ========== 画笔（canvas overlay，外置于缩放子树） ========== */
+.pen-group {
+    margin-right: 1px;
+}
+
+.pen-group .toolbar-btn {
+    border-radius: 4px 0 0 4px;
+    border-right: none;
+}
+
+/* 正文框（缩放目标 #article-container 的滚动子项） */
+.article-pane {
+    position: relative;
+}
+
+/* 内容层作为 canvas overlay 的定位基准 */
+.pane-content {
+    position: relative;
+}
+
+/* canvas overlay：放在内容流顶部（absolute），随内容一起滚动与缩放，
+   与文字同一坐标空间 → 笔迹天然对齐，任何缩放无偏移。默认穿透鼠标。
+   max-width/height 硬性保证 canvas 永不撑出正文框（缩放后滚动条晚一帧
+   稳定的瞬态里，防止 canvas 把视口撑出横向滚动条）；
+   百分比相对 padding box 解析，+2px 补回左右/上下 1px 边框 → 恰好盖满边框盒 */
+.pen-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: calc(100% + 2px);
+    max-height: calc(100% + 2px);
+    z-index: 60;
+    pointer-events: none;
+    /* 触屏/触控笔作画时禁止浏览器接管手势（滚动/捏合），
+       否则 pointermove 中途被取消、笔迹断线 */
+    touch-action: none;
+}
+
+/* 画笔/橡皮擦模式下由 canvas 接收指针：clientX/Y 经 pen.js 标定换算为内容坐标 */
+#article-container.pen-drawing .pen-canvas,
+#article-container.eraser-active .pen-canvas {
+    pointer-events: auto;
+    cursor: crosshair;
+}
+
+/* 画笔绘制模式：十字光标、禁止选中文本（与橡皮擦一致） */
+.pen-drawing .article-pane {
+    cursor: crosshair;
+    user-select: none;
+    -webkit-user-select: none;
+}

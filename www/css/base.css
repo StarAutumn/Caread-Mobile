@@ -1,0 +1,127 @@
+/* ========== CSS 变量 ========== */
+:root {
+    --bg-body: #f5f7fa;
+    --bg-input: #ffffff;
+    --bg-article: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --border-color: #e9edf2;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --card-bg: #fef9e7;
+    --card-border: #f0d58c;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --info-bg: #eef2f6;
+    --kbd-bg: #cbd5e1;
+    --btn-bg: #3b82f6;
+    --btn-hover: #2563eb;
+    --pos-color: #b45309;
+    --hover-bg: #dbeafe;
+    --highlight-bg: rgba(251, 191, 36, 0.70);
+    --highlighter-bg: rgba(255, 213, 0, 0.45);
+    --error-color: #b91c1c;
+    --sidebar-width: 300px;
+    --sidebar-collapsed-width: 10px;
+    --toolbar-height: 56px;
+    --tabbar-height: 40px;
+    --titlebar-height: 36px;
+    --statusbar-height: 28px;
+}
+
+[data-theme="dark"] {
+    --bg-body: #0f172a;
+    --bg-input: #1e293b;
+    --bg-article: #1e293b;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-color: #334155;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --card-bg: #2d3748;
+    --card-border: #4a5568;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    --info-bg: #1e293b;
+    --kbd-bg: #475569;
+    --btn-bg: #3b82f6;
+    --btn-hover: #60a5fa;
+    --pos-color: #fbbf24;
+    --hover-bg: #334155;
+    --highlight-bg: rgba(137, 13, 232, 0.7);
+    --highlighter-bg: rgba(250, 204, 21, 0.4);
+    --error-color: #f87171;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'PingFang SC', Roboto, sans-serif;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-body);
+    color: var(--text-primary);
+    transition: background 0.3s, color 0.3s;
+    overflow: hidden;
+    height: 100vh;
+    display: block;
+}
+
+/* 主题切换期间禁用所有过渡动画：
+   避免页面中大量元素（上千个 .word 等）同时做颜色/阴影过渡导致明显卡顿 */
+html.theme-switching *,
+html.theme-switching *::before,
+html.theme-switching *::after {
+    transition: none !important;
+}
+
+/* 自定义滚动条 */
+.main-content::-webkit-scrollbar,
+.article-pane::-webkit-scrollbar {
+    width: 8px;
+}
+
+.main-content::-webkit-scrollbar-track,
+.article-pane::-webkit-scrollbar-track {
+    background: var(--bg-body);
+}
+
+.main-content::-webkit-scrollbar-thumb,
+.article-pane::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover,
+.article-pane::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* 左右侧边栏内部样式滚动条：纤细、透明轨道、半透明圆角滑块 */
+.sidebar-content::-webkit-scrollbar,
+.outline-content::-webkit-scrollbar,
+.sidebar-content textarea::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track,
+.outline-content::-webkit-scrollbar-track,
+.sidebar-content textarea::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb,
+.outline-content::-webkit-scrollbar-thumb,
+.sidebar-content textarea::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover,
+.outline-content::-webkit-scrollbar-thumb:hover,
+.sidebar-content textarea::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}

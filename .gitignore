@@ -1,10 +1,7 @@
 # 依赖
 node_modules/
 
-# 构建产物：www 由 build-www.js 从桌面版 EngRead 组装生成，不入库
-www/
-
-# 词典瘦身产物（38MB，由 build-dict.js 从桌面版全量词典生成）
+# 词典瘦身中间产物（构建脚本输入用；随 APK 打包的是已入库的 www/data/dict-slim.json）
 data/dict-slim.json
 
 # Android 构建产物与生成文件（android/ 内已由 Capacitor 自带的 android/.gitignore 覆盖，此处兜底）
