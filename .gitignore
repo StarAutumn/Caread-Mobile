@@ -1,5 +1,5 @@
-# 依赖
-node_modules/
+# 依赖（仅根目录；www/node_modules 内的 Quill/mammoth 为打包资源，需入库）
+/node_modules/
 
 # 词典瘦身中间产物（构建脚本输入用；随 APK 打包的是已入库的 www/data/dict-slim.json）
 data/dict-slim.json
